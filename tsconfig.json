@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/tsrs/schemas/tsconfig.schema.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["vite/client", "node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
+  },
+  "contentMappers": [
+    {
+      "package": "@vue/content-mapper",
+      "extensions": [".vue"]
+    }
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "benchmark/generated/models/**/*.ts",
+    "benchmark/generated/components/**/*.vue",
+    "vite.config.ts"
+  ]
+}

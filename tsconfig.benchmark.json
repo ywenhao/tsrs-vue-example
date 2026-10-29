@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false
+  },
+  "include": ["benchmark/generated/models/**/*.ts", "benchmark/generated/components/**/*.vue"]
+}

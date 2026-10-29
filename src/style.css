@@ -1,0 +1,34 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #202b29;
+  background: #f5f5f0;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { width: min(640px, calc(100% - 40px)); margin: 72px auto; }
+h1 { margin: 14px 0; font-size: clamp(28px, 6vw, 42px); letter-spacing: -0.04em; }
+h2 { margin: 0; font-size: 18px; font-weight: 600; }
+p { line-height: 1.7; }
+header > p, .muted, footer { color: #66746f; }
+.eyebrow { color: #347761; font-size: 11px; font-weight: 700; letter-spacing: 0.16em; }
+.counter-card { margin-top: 32px; padding: 32px; background: white; border: 1px solid #e0e5dc; border-radius: 18px; }
+.counter-value { margin: 24px 0 0; font-size: 64px; font-weight: 650; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.counter-actions { display: flex; gap: 12px; margin-top: 24px; }
+button { min-height: 44px; padding: 10px 22px; border: 1px solid #d9e1d7; border-radius: 10px; font: inherit; cursor: pointer; color: #202b29; background: #f6f8f3; }
+.counter-actions button:last-child { border-color: #23674f; background: #23674f; color: white; }
+button:hover { filter: brightness(0.95); }
+button:focus-visible { outline: 3px solid #74b69b; outline-offset: 3px; }
+.status { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 13px; }
+.text-button { flex-shrink: 0; padding-inline: 8px; border-color: transparent; background: transparent; color: #23674f; }
+footer { margin-top: 28px; padding-top: 18px; border-top: 1px solid #dde3d8; font-size: 12px; }
+footer p { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+code { font-family: "SFMono-Regular", Consolas, monospace; color: #354f43; }
+
+@media (max-width: 480px) {
+  main { margin-top: 40px; }
+  .counter-card { padding: 24px; }
+}
