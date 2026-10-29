@@ -1,8 +1,8 @@
 {
-  "generatorVersion": 1,
+  "generatorVersion": 2,
   "tsFiles": 600,
   "vueFiles": 600,
   "linesPerFile": 500,
   "totalLines": 600000,
-  "bytes": 28604869
+  "bytes": 28604873
 }

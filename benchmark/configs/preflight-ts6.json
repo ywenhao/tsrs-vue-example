@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": [
+      "vite/client",
+      "node"
+    ],
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "incremental": false
+  },
+  "files": [
+    "../../examples/type-errors/ScriptError.vue",
+    "../../examples/type-errors/TemplateError.vue",
+    "../../examples/type-errors/PropsError.vue"
+  ],
+  "include": [],
+  "vueCompilerOptions": {
+    "strictTemplates": true
+  }
+}

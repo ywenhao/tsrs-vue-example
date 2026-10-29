@@ -61,6 +61,64 @@ bun run bench --only tsc         # 仅测官方 TS 7.1
 
 浏览器仍显示原来的计数器；生成组件没有加入页面运行时导入，便于单独观察类型检查耗时。`bun run build` 会检查全部源文件，然后只打包页面实际引用的模块。这是合成负载，不代表截图或其他真实项目的加速比例。
 
+## 四种工具链的图表报告
+
+`bench:report` 在同一批生成文件上比较以下四项：
+
+| 工具链 | 固定版本 |
+|---|---|
+| vue-tsc + TS 6 | vue-tsc 3.3.13 / TypeScript 6.0.3 |
+| TS 7.1 + Vue mapper | TypeScript 7.1.0-beta / mapper 4.0.0-alpha.0 |
+| tsrs + Vue mapper | tsrs 0.20.1-ts7.1.0-beta / 同一 mapper |
+| tsrs --fast + mapper | 同上，增加 `--fast` |
+
+TS 6 基线安装在 `benchmark/toolchains/vue-tsc/`，有独立的 lockfile，避免 vue-tsc 误用根目录的 TS 7 原生 API。基线使用 Vue language-core v3 的 `strictTemplates`，现代三项使用 mapper v4 与 TypeScript `strict`。这是完整工具链的比较，各版模板转换实现不同。
+
+| 场景 ID | TS 文件 | Vue 文件 | 总物理行数 |
+|---|---:|---:|---:|
+| small-balanced | 100 | 100 | 100,000 |
+| ts-heavy | 600 | 200 | 400,000 |
+| vue-heavy | 200 | 600 | 400,000 |
+| large-balanced | 600 | 600 | 600,000 |
+
+各场景取生成文件的前缀，仍然每文件 500 行。模型只引用前一个模型，Vue 只引用前 100 个模型与较低编号组件，脚本会校验所有相对导入都在场景内，防止较小负载因间接引用变大。四组工具先检查三个故意错误的 fixture，再运行正式负载。
+
+完整报告需要 **Linux / WSL 的 `/proc`**、Python 3、Bun、Node 和 [uv](https://docs.astral.sh/uv/)。采样器只使用 Python 标准库；绘图通过 uv 使用 Python 3.14 和固定版本 Matplotlib 的预编译包，不从源码构建。
+
+```bash
+bun install --frozen-lockfile
+bun run bench:setup          # 安装隔离的 vue-tsc + TS 6
+bun run check:bench          # 确认 600 TS + 600 Vue，每文件 500 行
+bun run bench:report         # 四场景 × 四工具 × (1 次预热 + 3 次正式) = 64 次
+```
+
+测量会顺序执行，正式轮次轮换工具顺序。完整耗时包括编译器、Vue 转换和 mapper/API 启动；不清除系统文件缓存。所有项关闭增量和 emit，启用严格检查、跳过依赖声明检查，Node 堆上限统一为 8 GiB，现代工具统一 mapper worker 数（默认 4）。测量期间应避免同时运行其他重负载。
+
+内存按 **每约 25 ms 在同一轮采样中累加的编译器进程树 RSS 的峰值**统计，包含 mapper/API 子进程，排除 Python 监测器和 Bun 协调器。共享页可能重复计数，短暂峰值也可能落在两次采样之间；它不是唯一物理内存或 PSS。报告取各轮耗时与各轮峰值 RSS 的中位数，图中细线显示最小到最大范围，保留全部单次样本。
+
+报告保存到 `benchmark/reports/<时间戳>/`，最新一份复制到 `benchmark/reports/latest/`：
+
+生成后可直接打开 [最新完整报告](benchmark/reports/latest/report.html)、[Markdown 报告](benchmark/reports/latest/report.md) 或 [总览图片](benchmark/reports/latest/overview.png)。
+
+- `report.html`：图表已内嵌，可离线打开的完整报告。
+- `report.md`、`overview.png`、各场景 PNG / SVG：便于阅读、分享和引用。
+- `results.json`、`summary.json`、`samples.csv`：原始测量、汇总结果和表格样本。
+- 每次编译的 `.log` / `.json`：诊断、命令与进程统计；`report.zip` 打包报告和原始数据。
+
+```bash
+# 指定场景、采样次数；快速命令的单次结果仅用于检查流程
+bun run bench:report --scenarios ts-heavy,vue-heavy --runs 5 --warmup 1
+bun run bench:report:quick
+
+# 中断后恢复；场景、次数、依赖、源码和 worker 数必须与原运行一致
+bun run bench:report --resume benchmark/reports/<时间戳>
+
+# 用已完成的原始结果重新绘图，不重跑编译器
+bun run bench:render benchmark/reports/<时间戳>/results.json
+```
+
+每完成一次测量就写入 checkpoint。若使用了自定义场景或采样次数，恢复时也要传入原参数。报告显示相对 TS 6 基线的加速比；合成负载与参考截图的源码、硬件不同，结果不能直接互相替代。旧 `bench` 的三工具计时结果不会混入这套报告。
+
 ## 关键配置
 
 安装以下相互兼容的版本：

@@ -21,6 +21,10 @@
     "check:bench": "bun scripts/generate-benchmark.mjs --check",
     "bench": "bun scripts/benchmark.mjs",
     "bench:quick": "bun scripts/benchmark.mjs --runs 1 --warmup 0",
+    "bench:setup": "bun install --cwd benchmark/toolchains/vue-tsc --frozen-lockfile",
+    "bench:report": "bun scripts/benchmark-suite.mjs",
+    "bench:report:quick": "bun scripts/benchmark-suite.mjs --runs 1 --warmup 0",
+    "bench:render": "uv run --no-build --python 3.14 --script scripts/render-benchmark-report.py",
     "build": "bun run typecheck && bun --bun vite build"
   },
   "dependencies": {
